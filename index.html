@@ -56,6 +56,17 @@
 
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
+  .page-bg {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background: #0b0e13 url("nyc-bg.jpg") 50% 38% / cover no-repeat;
+  }
+  .page-bg::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(90% 70% at 50% 35%, rgba(11,14,19,.22), rgba(11,14,19,.70) 100%),
+      linear-gradient(180deg, rgba(11,14,19,.18), rgba(11,14,19,.45));
+  }
+  .digital-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; pointer-events: none; }
   section[id], header[id] { scroll-margin-top: 72px; }
   html { scroll-behavior: smooth; }
   body {
@@ -135,16 +146,15 @@
 
   /* hero */
   .hero {
+    --sky-h: clamp(150px, 21.4vw, 340px);
     position: relative;
+    padding-bottom: calc(var(--sky-h) - 48px);
     border-bottom: 1px solid var(--line);
-    background:
-      radial-gradient(50% 60% at 85% 20%, rgba(242,194,48,.10), transparent 70%),
-      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0) 0 0 / 26px 26px,
-      var(--bg);
+    background: radial-gradient(50% 60% at 85% 20%, rgba(242,194,48,.10), transparent 70%);
   }
   .hero::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(180deg, transparent 50%, var(--bg)), linear-gradient(90deg, var(--bg) 15%, transparent 55%);
+    background: linear-gradient(90deg, rgba(11,14,19,.72) 10%, transparent 55%);
   }
   .hero .wrap {
     position: relative;
@@ -152,8 +162,10 @@
     grid-template-columns: 1.1fr .9fr;
     gap: clamp(36px, 5vw, 72px);
     align-items: center;
-    padding-block: clamp(56px, 8vw, 104px);
+    padding-block: clamp(56px, 8vw, 104px) 16px;
   }
+  .skyline { position: absolute; left: 0; bottom: 0; width: 100%; height: var(--sky-h); display: block; pointer-events: none; }
+  .hero-copy { text-shadow: 0 1px 22px rgba(11,14,19,.6); }
   .hero-copy { display: grid; gap: 24px; min-width: 0; }
   .status {
     justify-self: start;
@@ -200,7 +212,7 @@
   .ide-foot .ok { color: #5fd38a; }
 
   /* worked-with strip */
-  .orgs { border-bottom: 1px solid var(--line); background: #0f1318; }
+  .orgs { border-bottom: 1px solid var(--line); background: rgba(16,20,26,.72); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
   .orgs .wrap { display: flex; align-items: center; gap: 18px 40px; flex-wrap: wrap; padding-block: 26px; }
   .orgs .label { font: 500 12px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   .orgs ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 40px; flex: 1; justify-content: space-between; }
@@ -209,7 +221,7 @@
 
   /* sections */
   section.block { padding-block: clamp(72px, 9vw, 116px); border-bottom: 1px solid var(--line); }
-  section.alt { background: #0f1318; }
+  section.alt { background: rgba(16,20,26,.42); }
   .head { display: grid; gap: 14px; margin-bottom: clamp(36px, 4.5vw, 56px); max-width: 720px; }
   .head p { font-size: 18px; color: var(--muted); }
 
@@ -465,7 +477,7 @@
   }
 
   /* stats band */
-  .band { background: linear-gradient(180deg, var(--band), #0c0f14); border-block: 1px solid var(--line); color: var(--band-ink); padding-block: clamp(64px, 8vw, 96px); }
+  .band { background: linear-gradient(180deg, rgba(16,20,26,.8), rgba(12,15,20,.8)); border-block: 1px solid var(--line); color: var(--band-ink); padding-block: clamp(64px, 8vw, 96px); }
   .band .eyebrow { color: var(--band-accent); }
   .band h2 { color: #fff; }
   .band .head p { color: var(--band-muted); }
@@ -506,10 +518,13 @@
   .loc svg { width: 16px; height: 16px; }
 
   footer { border-top: 1px solid var(--line); padding-block: 26px; }
+  footer a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--line-2); }
+  footer a:hover { color: var(--accent); border-color: var(--accent); }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
 
   /* responsive */
   @media (max-width: 960px) {
+    .hero { padding-bottom: calc(var(--sky-h) - 8px); }
     .hero .wrap, .contact-card { grid-template-columns: 1fr; }
     .bento { grid-template-columns: repeat(2, 1fr); }
     .t-statement { grid-row: auto; }
@@ -542,7 +557,9 @@
     .t-statement { grid-column: auto; }
     .ide pre { font-size: 11.5px; }
     .ide pre .l::before { width: 32px; padding-right: 10px; }
-    .orgs ul { justify-content: flex-start; }
+    .orgs .wrap { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .orgs ul { justify-content: flex-start; gap: 10px 22px; }
+    .orgs li { font-size: 16px; }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -576,6 +593,7 @@
 </nav>
 
 <header class="hero" id="top">
+  <canvas class="skyline" id="skyline" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="hero-copy">
       <span class="status"><span class="dot" aria-hidden="true"></span>Open to Senior AEM Developer &amp; Architect roles</span>
@@ -921,11 +939,314 @@
   <div class="wrap">
     <span>© 2026 Phanindra Valavala</span>
     <span>Senior AEM Developer · New York</span>
+    <span>Background photo: <a href="https://unsplash.com/photos/fPaCAQKkRqY" target="_blank" rel="noopener">Jonathan Roger on Unsplash</a></span>
   </div>
 </footer>
 
+<div class="page-bg" aria-hidden="true"></div>
+<canvas class="digital-bg" id="digital" aria-hidden="true"></canvas>
+
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Digital background: faint circuit traces with travelling data pulses
+  (function () {
+    const c = document.getElementById('digital');
+    if (!c || !c.getContext) return;
+    const ctx = c.getContext('2d');
+    const CELL = 26, GOLD = a => `rgba(242,194,48,${a})`;
+    const DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+    let W = 0, H = 0, dpr, stat, traces = [], pulses = [], flashes = [], mx = -9999, my = -9999, last = 0;
+
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = innerWidth; H = innerHeight;
+      c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+      stat = document.createElement('canvas'); stat.width = c.width; stat.height = c.height;
+      const g = stat.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.strokeStyle = 'rgba(239,234,224,.03)'; g.lineWidth = 1; g.beginPath();
+      for (let x = .5; x < W; x += CELL * 2) { g.moveTo(x, 0); g.lineTo(x, H); }
+      for (let y = .5; y < H; y += CELL * 2) { g.moveTo(0, y); g.lineTo(W, y); }
+      g.stroke();
+
+      traces = [];
+      const cols = Math.ceil(W / CELL), rows = Math.ceil(H / CELL), used = new Set();
+      const tries = Math.round(cols * rows / 30);
+      for (let i = 0; i < tries; i++) {
+        let cx = Math.floor(Math.random() * cols), cy = Math.floor(Math.random() * rows);
+        if (used.has(cx + ',' + cy)) continue;
+        let d = Math.floor(Math.random() * 4) * 2;
+        const cells = [[cx, cy]]; used.add(cx + ',' + cy);
+        const len = 5 + Math.floor(Math.random() * 16);
+        for (let k = 0; k < len; k++) {
+          if (k > 1 && Math.random() < .22) d = (d + (Math.random() < .5 ? 1 : 7)) % 8;
+          const nx = cx + DIRS[d][0], ny = cy + DIRS[d][1], key = nx + ',' + ny;
+          if (nx < 0 || ny < 0 || nx >= cols || ny >= rows || used.has(key)) break;
+          cx = nx; cy = ny; used.add(key); cells.push([cx, cy]);
+        }
+        if (cells.length < 4) continue;
+        const pts = cells.map(([x, y]) => [x * CELL + CELL / 2, y * CELL + CELL / 2]);
+        const acc = [0];
+        for (let k = 1; k < pts.length; k++) acc.push(acc[k - 1] + Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]));
+        traces.push({ pts, acc, len: acc[acc.length - 1] });
+      }
+      g.strokeStyle = 'rgba(239,234,224,.075)'; g.lineWidth = 1;
+      traces.forEach(t => { g.beginPath(); t.pts.forEach(([x, y], k) => k ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); });
+      traces.forEach(t => {
+        const [sx, sy] = t.pts[0], [ex, ey] = t.pts[t.pts.length - 1];
+        g.fillStyle = 'rgba(239,234,224,.15)'; g.beginPath(); g.arc(sx, sy, 1.6, 0, 6.29); g.fill();
+        g.strokeStyle = GOLD(.24); g.beginPath(); g.arc(ex, ey, 2.8, 0, 6.29); g.stroke();
+      });
+
+      const n = Math.min(22, Math.max(6, Math.round(traces.length / 4)));
+      pulses = Array.from({ length: n }, () => spawn(true));
+      flashes = [];
+      draw(performance.now());
+    }
+    function spawn(initial) {
+      const t = traces[Math.floor(Math.random() * traces.length)];
+      return { t, d: initial ? Math.random() * t.len : 0, v: 45 + Math.random() * 55, wait: initial ? 0 : Math.random() * 1500 };
+    }
+    function at(t, d) {
+      let k = 1; while (k < t.acc.length - 1 && t.acc[k] < d) k++;
+      const a = t.pts[k - 1], b = t.pts[k], seg = t.acc[k] - t.acc[k - 1] || 1, f = Math.min(1, Math.max(0, (d - t.acc[k - 1]) / seg));
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    }
+    function draw(now, dt = 0) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.drawImage(stat, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (mx > -999) {
+        const gr = ctx.createRadialGradient(mx, my, 0, mx, my, 280);
+        gr.addColorStop(0, GOLD(.05)); gr.addColorStop(1, GOLD(0));
+        ctx.fillStyle = gr; ctx.fillRect(mx - 280, my - 280, 560, 560);
+      }
+      if (reduce) return;
+      pulses.forEach((p, i) => {
+        if (p.wait > 0) { p.wait -= dt; return; }
+        p.d += p.v * dt / 1000;
+        if (p.d >= p.t.len) {
+          const [ex, ey] = p.t.pts[p.t.pts.length - 1];
+          flashes.push({ x: ex, y: ey, life: 1 });
+          pulses[i] = spawn(false); return;
+        }
+        for (let k = 6; k >= 0; k--) {
+          const d = p.d - k * 5; if (d < 0) continue;
+          const [x, y] = at(p.t, d);
+          ctx.fillStyle = GOLD(k ? .38 * (1 - k / 7) : .9);
+          ctx.beginPath(); ctx.arc(x, y, k ? 1.2 : 1.8, 0, 6.29); ctx.fill();
+        }
+      });
+      flashes = flashes.filter(f => (f.life -= dt / 700) > 0);
+      flashes.forEach(f => {
+        const gr = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, 14);
+        gr.addColorStop(0, GOLD(.45 * f.life)); gr.addColorStop(1, GOLD(0));
+        ctx.fillStyle = gr; ctx.fillRect(f.x - 14, f.y - 14, 28, 28);
+      });
+    }
+    build();
+    function loop(now) { const dt = now - last; if (dt > 33) { draw(now, Math.min(dt, 100)); last = now; } requestAnimationFrame(loop); }
+    if (!reduce) requestAnimationFrame(t => { last = t; loop(t); });
+    addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; if (reduce) draw(0); }, { passive: true });
+    document.addEventListener('pointerleave', () => { mx = my = -9999; });
+    let rt;
+    addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => { if (innerWidth !== W || Math.abs(innerHeight - H) > 120) build(); }, 200);
+    });
+  })();
+
+  // Hero skyline: New York landmarks drawn on canvas
+  (function () {
+    const c = document.getElementById('skyline');
+    if (!c || !c.getContext) return;
+    const ctx = c.getContext('2d');
+    const VW = 1400, VH = 300, G = 282;
+    const FAR = '#10141b', NEAR = '#151a22', MARK = '#1a212b', EDGE = 'rgba(239,234,224,.12)';
+    const GOLD = a => `rgba(242,194,48,${a})`;
+    let rnd, wins, stat, s, ox, W, H, dpr, xL, xR;
+    const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const R = (g, x0, y0, x1, y1, f, st) => { g.fillStyle = f; g.fillRect(x0, y0, x1 - x0, y1 - y0); if (st) { g.strokeStyle = st; g.lineWidth = 1; g.strokeRect(x0 + .5, y0 + .5, x1 - x0 - 1, y1 - y0 - 1); } };
+    const P = (g, pts, f, st) => { g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); if (f) { g.fillStyle = f; g.fill(); } if (st) { g.strokeStyle = st; g.lineWidth = 1; g.stroke(); } };
+    const bump = (x, m, w, a) => a * Math.exp(-((x - m) ** 2) / (2 * w * w));
+    const q = (a, b, cc, t) => [(1 - t) ** 2 * a[0] + 2 * (1 - t) * t * b[0] + t * t * cc[0], (1 - t) ** 2 * a[1] + 2 * (1 - t) * t * b[1] + t * t * cc[1]];
+
+    function lights(g, x0, y0, x1, y1, p) {
+      for (let y = y0 + 5; y < y1 - 4; y += 7)
+        for (let x = x0 + 3; x < x1 - 3; x += 5) {
+          const r = rnd();
+          if (r < p) {
+            const a = .3 + rnd() * .6;
+            if (rnd() < .1) wins.push({ x, y, a, ph: rnd() * 6.28, sp: .4 + rnd() * .8 });
+            else { g.fillStyle = GOLD(a); g.fillRect(x, y, 2, 3); }
+          } else if (r < p + .03) { g.fillStyle = 'rgba(239,234,224,.16)'; g.fillRect(x, y, 2, 3); }
+        }
+    }
+    function waterTower(g, cx, top) {
+      g.strokeStyle = NEAR; g.lineWidth = 1.2; g.beginPath();
+      g.moveTo(cx - 3, top); g.lineTo(cx - 3, top - 6); g.moveTo(cx + 3, top); g.lineTo(cx + 3, top - 6); g.stroke();
+      R(g, cx - 4, top - 13, cx + 4, top - 6, NEAR);
+      P(g, [[cx - 5, top - 13], [cx + 5, top - 13], [cx, top - 18]], NEAR);
+    }
+
+    function scene(g) {
+      rnd = mulberry(20260929); wins = [];
+      // warm city glow on the horizon
+      [[330, 230, .10], [1040, 270, .11], [100, 130, .07]].forEach(([x, rr, a]) => {
+        const gr = g.createRadialGradient(x, G, 0, x, G, rr); gr.addColorStop(0, GOLD(a)); gr.addColorStop(1, GOLD(0));
+        g.fillStyle = gr; g.fillRect(x - rr, G - rr, 2 * rr, rr);
+      });
+      // far skyline
+      for (let x = 190; x < xR;) {
+        const w = 14 + rnd() * 30;
+        const h = 30 + rnd() * 42 + bump(x, 330, 110, 120) + bump(x, 1060, 240, 130) - bump(x, 620, 80, 22);
+        R(g, x, G - h, x + w - 1, G, FAR); x += w;
+      }
+      // near buildings, with rooftop water towers (river left open under the bridge)
+      for (let x = 196; x < xR;) {
+        const w = 16 + rnd() * 26;
+        if (x > 466 && x < 774) { x = 774; continue; }
+        const h = 22 + rnd() * 50 + bump(x, 330, 90, 60) + bump(x, 1080, 210, 70);
+        R(g, x, G - h, x + w - 2, G, NEAR);
+        lights(g, x, G - h, x + w - 2, G, .16);
+        if (rnd() < .35 && w > 18) waterTower(g, x + w * (.3 + rnd() * .4), G - h);
+        x += w;
+      }
+
+      // Statue of Liberty
+      P(g, [[22, G], [42, G - 7], [150, G - 7], [172, G]], MARK, EDGE);
+      P(g, [[54, G - 7], [60, G - 15], [130, G - 15], [136, G - 7]], MARK, EDGE);
+      P(g, [[72, G - 15], [76, G - 21], [114, G - 21], [118, G - 15]], MARK, EDGE);
+      R(g, 80, G - 66, 110, G - 21, MARK, EDGE);
+      P(g, [[77, G - 66], [113, G - 66], [109, G - 72], [81, G - 72]], MARK, EDGE);
+      P(g, [[84, G - 72], [106, G - 72], [101, G - 118], [89, G - 118]], MARK, EDGE);
+      P(g, [[88, G - 118], [102, G - 118], [100, G - 126], [90, G - 126]], MARK, EDGE);
+      g.beginPath(); g.arc(95, G - 130, 4.5, 0, 6.29); g.fillStyle = MARK; g.fill(); g.strokeStyle = EDGE; g.lineWidth = 1; g.stroke();
+      g.strokeStyle = MARK; g.lineWidth = 1.6; g.beginPath();
+      for (let i = 0; i < 7; i++) { const an = (-160 + i * 23.3) * Math.PI / 180; g.moveTo(95 + Math.cos(an) * 4, G - 131 + Math.sin(an) * 4); g.lineTo(95 + Math.cos(an) * 11, G - 131 + Math.sin(an) * 11); }
+      g.stroke();
+      P(g, [[98, G - 121], [102, G - 123], [106, G - 163], [102, G - 164]], MARK, EDGE);
+      P(g, [[100, G - 164], [108, G - 164], [106, G - 169], [102, G - 169]], MARK);
+      P(g, [[87, G - 102], [91, G - 110], [86, G - 113], [82, G - 105]], MARK, EDGE);
+      lights(g, 80, G - 64, 110, G - 24, .1);
+
+      // One World Trade Center
+      R(g, 312, G - 52, 348, G, MARK, EDGE);
+      P(g, [[312, G - 52], [348, G - 52], [340, G - 238], [320, G - 238]], MARK, EDGE);
+      P(g, [[330, G - 52], [348, G - 52], [340, G - 238], [330, G - 238]], 'rgba(239,234,224,.04)');
+      R(g, 318, G - 244, 342, G - 238, MARK, EDGE);
+      R(g, 329.2, G - 270, 330.8, G - 244, MARK);
+      lights(g, 312, G - 52, 348, G, .22);
+      for (let y = G - 60; y > G - 232; y -= 8) if (rnd() < .5) { const hw = 18 - 8 * (G - 52 - y) / 186; g.fillStyle = GOLD(.25 + rnd() * .45); g.fillRect(330 - hw + 3 + rnd() * (2 * hw - 8), y, 2, 3); }
+
+      // Brooklyn Bridge
+      const T1 = 540, T2 = 700, TT = G - 100, DK = G - 31;
+      R(g, 478, DK, 762, DK + 4, MARK);
+      P(g, [[450, G], [478, DK], [478, DK + 4], [462, G]], MARK);
+      P(g, [[790, G], [762, DK], [762, DK + 4], [778, G]], MARK);
+      const cables = [[[482, DK - 2], [515, G - 60], [T1, TT - 3]], [[T1, TT - 3], [620, G - 20], [T2, TT - 3]], [[T2, TT - 3], [725, G - 60], [758, DK - 2]]];
+      g.lineWidth = .7; g.strokeStyle = 'rgba(239,234,224,.07)'; g.beginPath();
+      [T1, T2].forEach(x => { for (let k = 1; k <= 7; k++) { g.moveTo(x, TT + 2); g.lineTo(x - k * 10, DK); g.moveTo(x, TT + 2); g.lineTo(x + k * 10, DK); } });
+      g.stroke();
+      g.strokeStyle = 'rgba(239,234,224,.11)'; g.beginPath();
+      cables.forEach(([a, b, cc]) => { for (let t = .05; t < 1; t += .05) { const [x, y] = q(a, b, cc, t); g.moveTo(x, y); g.lineTo(x, DK); } });
+      g.stroke();
+      [T1, T2].forEach(x => {
+        g.beginPath(); g.rect(x - 12, TT, 24, G - TT);
+        [[x - 9, x - 2], [x + 2, x + 9]].forEach(([a, b]) => { const m = (a + b) / 2; g.moveTo(a, DK + 1); g.lineTo(a, TT + 30); g.quadraticCurveTo(a, TT + 22, m, TT + 17); g.quadraticCurveTo(b, TT + 22, b, TT + 30); g.lineTo(b, DK + 1); g.closePath(); });
+        g.fillStyle = MARK; g.fill('evenodd'); g.strokeStyle = EDGE; g.lineWidth = 1; g.stroke();
+        R(g, x - 14, TT - 5, x + 14, TT + 1, MARK, EDGE);
+      });
+      g.strokeStyle = 'rgba(239,234,224,.34)'; g.lineWidth = 1.3; g.beginPath();
+      cables.forEach(([a, b, cc]) => { g.moveTo(a[0], a[1]); g.quadraticCurveTo(b[0], b[1], cc[0], cc[1]); });
+      g.stroke();
+      g.fillStyle = GOLD(.85);
+      cables.forEach(([a, b, cc]) => { for (let t = .08; t < .96; t += .08) { const [x, y] = q(a, b, cc, t); g.beginPath(); g.arc(x, y, 1.1, 0, 6.29); g.fill(); } });
+
+      // The Edge at 30 Hudson Yards
+      P(g, [[818, G], [862, G], [862, G - 198], [818, G - 214]], MARK, EDGE);
+      lights(g, 818, G - 190, 862, G, .18);
+      P(g, [[862, G - 193], [903, G - 187], [862, G - 181]], 'rgba(242,194,48,.18)', GOLD(.55));
+      g.strokeStyle = GOLD(.95); g.lineWidth = 1.2; g.beginPath(); g.moveTo(862, G - 193); g.lineTo(903, G - 187); g.stroke();
+
+      // Empire State Building
+      [[955, 1015, 0, 62], [962, 1008, 62, 150], [968, 1002, 150, 178], [973, 997, 178, 196], [977, 993, 196, 206]]
+        .forEach(([a, b, y0, y1]) => { R(g, a, G - y1, b, G - y0, MARK, EDGE); lights(g, a, G - y1, b, G - y0, .22); });
+      let gr = g.createRadialGradient(985, G - 212, 0, 985, G - 212, 30); gr.addColorStop(0, GOLD(.22)); gr.addColorStop(1, GOLD(0));
+      g.fillStyle = gr; g.fillRect(955, G - 242, 60, 60);
+      R(g, 979, G - 218, 991, G - 206, GOLD(.6), GOLD(.85));
+      P(g, [[979, G - 218], [991, G - 218], [987, G - 227], [983, G - 227]], MARK, EDGE);
+      R(g, 983.5, G - 250, 986.5, G - 227, MARK);
+      R(g, 984.4, G - 272, 985.6, G - 250, MARK);
+
+      // 432 Park Avenue
+      R(g, 1066, G - 252, 1084, G, MARK, EDGE);
+      g.strokeStyle = 'rgba(239,234,224,.05)'; g.lineWidth = .6; g.beginPath();
+      for (let y = G - 246; y < G; y += 6) { g.moveTo(1066, y); g.lineTo(1084, y); }
+      [1072, 1078].forEach(x => { g.moveTo(x, G - 252); g.lineTo(x, G); });
+      g.stroke();
+      lights(g, 1066, G - 250, 1084, G, .12);
+
+      // Chrysler Building
+      R(g, 1155, G - 112, 1205, G, MARK, EDGE); lights(g, 1155, G - 112, 1205, G, .2);
+      R(g, 1162, G - 170, 1198, G - 112, MARK, EDGE); lights(g, 1162, G - 170, 1198, G - 112, .2);
+      gr = g.createRadialGradient(1180, G - 190, 0, 1180, G - 190, 36); gr.addColorStop(0, GOLD(.16)); gr.addColorStop(1, GOLD(0));
+      g.fillStyle = gr; g.fillRect(1140, G - 230, 80, 80);
+      for (let i = 0; i < 5; i++) {
+        const w = 18 - i * 3.5, cy = G - 170 - i * 9;
+        g.beginPath(); g.moveTo(1180 - w, cy + .5); g.arc(1180, cy, w, Math.PI, 0); g.closePath();
+        g.fillStyle = MARK; g.fill(); g.strokeStyle = GOLD(.45); g.lineWidth = 1; g.stroke();
+        for (let k = -2; k <= 2; k++) { const dx = k * w * .38, tx = 1180 + dx, ty = cy - Math.sqrt(Math.max(0, w * w - dx * dx)) * .55; P(g, [[tx - 1.4, ty + 2], [tx + 1.4, ty + 2], [tx, ty - 1.5]], GOLD(.85)); }
+      }
+      P(g, [[1177, G - 211], [1183, G - 211], [1180, G - 262]], MARK, EDGE);
+
+      // the harbor and the river
+      R(g, xL, G, xR, VH, '#0c1016');
+      g.fillStyle = 'rgba(239,234,224,.06)';
+      for (let i = 0; i < 110; i++) g.fillRect(xL + rnd() * (xR - xL), G + 3 + rnd() * 14, 6 + rnd() * 18, .8);
+      [[104, .55], [620, .25], [882, .3], [985, .35], [1180, .3]].forEach(([x, a]) => {
+        for (let y = G + 3; y < VH; y += 3) { g.fillStyle = GOLD(a * (1 - (y - G) / 20)); g.fillRect(x - 5 + rnd() * 5, y, 3 + rnd() * 7, 1); }
+      });
+    }
+
+    const beacons = [[330, G - 271, 0], [985, G - 273, 700], [1075, G - 254, 1300]];
+    function overlay(t) {
+      ctx.setTransform(s * dpr, 0, 0, s * dpr, ox * dpr, 0);
+      for (const w of wins) { ctx.fillStyle = GOLD(w.a * (.2 + .8 * (.5 + .5 * Math.sin(t / 1000 * w.sp + w.ph)))); ctx.fillRect(w.x, w.y, 2, 3); }
+      const fl = .78 + .22 * Math.sin(t / 170) * Math.sin(t / 430);
+      const gr = ctx.createRadialGradient(104, G - 174, 0, 104, G - 174, 20); gr.addColorStop(0, GOLD(.5 * fl)); gr.addColorStop(1, GOLD(0));
+      ctx.fillStyle = gr; ctx.fillRect(84, G - 194, 40, 40);
+      ctx.fillStyle = `rgba(255,214,102,${fl})`; ctx.beginPath(); ctx.ellipse(104, G - 173.5, 2.4, 4.2, 0, 0, 6.29); ctx.fill();
+      beacons.forEach(([x, y, ph]) => { ctx.fillStyle = `rgba(255,86,76,${((t + ph) % 1800) < 900 ? .95 : .15})`; ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.29); ctx.fill(); });
+    }
+    function frame(t) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.drawImage(stat, 0, 0);
+      overlay(t);
+    }
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = c.clientWidth; H = c.clientHeight;
+      if (!W || !H) return;
+      c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+      s = H / VH;
+      ox = W >= VW * s ? (W - VW * s) / 2 : Math.max(W - VW * s, W < 700 ? 0 : (W - VW * s) / 2);
+      xL = -ox / s; xR = (W - ox) / s;
+      stat = document.createElement('canvas'); stat.width = c.width; stat.height = c.height;
+      const g = stat.getContext('2d');
+      g.setTransform(s * dpr, 0, 0, s * dpr, ox * dpr, 0);
+      scene(g);
+      frame(performance.now());
+    }
+    build();
+    let visible = true, last = 0, rt;
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(c);
+    function loop(t) { if (visible && t - last > 50) { frame(t); last = t; } requestAnimationFrame(loop); }
+    if (!reduce) requestAnimationFrame(loop);
+    addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 150); });
+  })();
 
   // Code card: a gentle highlight steps through the lines
   (function () {
